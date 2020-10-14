@@ -17,7 +17,6 @@ class CharacterResource(Resource):
         return users, 200
 
 
-
     @staticmethod
     def post():
         json_data = request.get_json(force=True)
@@ -26,10 +25,14 @@ class CharacterResource(Resource):
         # Validate and deserialize input
         response = json.dumps(json_data)
         data = CharacterSchema.loads(response)
-        user = Character.query.filter_by(id=data['id']).first()
 
-        if user:
-            return {'message': 'User already exists'}, 400
+
+        # Avoid printing a DB error to the user
+        # user = Character.query.get(id=data['id'])
+
+        # if user:
+            # return {'message': 'User already exists'}, 400
+
         user = Character(
             id=data['id'],
             name=data['name'],
@@ -44,3 +47,33 @@ class CharacterResource(Resource):
         result = CharacterSchema.dump(user)
         return result, 201
 
+    @staticmethod
+    def delete():
+        json_data = request.get_json(force=True)
+        if not json_data:
+            return {'message': 'No input data provided'}, 400
+        # Validate and deserialize input
+        response = json.dumps(json_data)
+        data = CharacterSchema.loads(response)
+        user = Character.query.filter_by(id=data['id'])
+
+        db.session.delete(user)
+        db.session.commit()
+        return 'User deleted', 200
+
+    @staticmethod
+    def put():
+        json_data = request.get_json(force=True)
+        if not json_data:
+            return {'message': 'No input data provided'}, 400
+        # Validate and deserialize input
+        response = json.dumps(json_data)
+        data = CharacterSchema.loads(response)
+
+        # Checks if the user does exist
+        # get(id)
+        user = Character.query.filter_by(id=data['id']).update(data)
+
+        db.session.commit()
+        result = CharacterSchema.dump(user)
+        return result, 201
