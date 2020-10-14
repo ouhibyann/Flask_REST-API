@@ -61,7 +61,8 @@ class HatResource(Resource):
         # Validate and deserialize input
         response = json.dumps(json_data)
         data = HatSchema.loads(response)
-        hat = Hat.query.filter_by(id=data['id']).delete()
+        hat = Hat.query.filter_by(id=data['id'])
+        db.session.delete(hat)
 
         db.session.commit()
         return {'User deleted': hat}, 200
@@ -77,7 +78,8 @@ class HatResource(Resource):
 
         # Checks if the user does exist
         # get(id)
-        hat = Hat.query.filter_by(id=data['id']).update(data)
+        hat = Hat.query.filter_by(id=data['id'])
+        db.session.update(hat)
 
         db.session.commit()
         result = HatSchema.dump(hat)

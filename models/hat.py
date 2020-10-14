@@ -18,8 +18,6 @@ class Hat(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     colour = db.Column(db.Enum(Colour))
 
-
-
     def __init__(self, id, colour):
         self.id = id
         self.colour = colour

@@ -1,7 +1,7 @@
 from flask import request
 from flask_restful import Resource
 
-from Resources.HatResource import HatOne
+from models.hat import Hat
 from models.db import db
 from models.character import Character, CharacterSchema
 import json
@@ -42,10 +42,11 @@ class CharacterResource(Resource):
         # Avoid printing a DB error to the user
         # user = Character.query.filter_by(id=data['id'])
         # if user:
-            # return {'message': 'User already exists'}, 400
+        # return {'message': 'User already exists'}, 400
 
-        # if not data['human']:
-        # data['hat'] = "0"
+        # the 1-1 relationship with the hat disable the possibility to create a character with hat = False
+        if not data['human']:
+            return 'can not create the character'
 
         if data['weight'] > 80 and data['human'] == True:
             if data['age'] < 10:
@@ -72,13 +73,16 @@ class CharacterResource(Resource):
         json_data = request.get_json(force=True)
         if not json_data:
             return {'message': 'No input data provided'}, 400
+
         # Validate and deserialize input
         response = json.dumps(json_data)
         data = CharacterSchema.loads(response)
         user = Character.query.filter_by(id=data['id']).delete()
+        # db.session.delete(user)
+        # Hat.query.filter_by(id=data['hat']).delete()
 
         db.session.commit()
-        return {'User deleted': user}, 200
+        return {'User deleted ': data['id']}, 200
 
     @staticmethod
     def put():
@@ -89,17 +93,15 @@ class CharacterResource(Resource):
         response = json.dumps(json_data)
         data = CharacterSchema.loads(response)
 
-        # if not data['human']:
-        #    data['hat'] = "0"
 
-        if data['weight'] > 80 and data['human'] == True:
-            if data['age'] < 10:
-                return 'weight is too big for age'
-        if data['age'] < 0:
-            return 'age is not correct'
+        #if data['weight'] > 80 and data['human'] == True:
+            #if data['age'] < 10:
+                #return 'weight is too big for age'
+        #if data['age'] < 0:
+            #return 'age is not correct'
 
-        #if re.search('[pP]', data['name']) and data['hat'] == "YELLOW":
-            #return 'You have a p in your name, can not have a yelloy hat'
+        # if re.search('[pP]', data['name']) and data['hat'] == "YELLOW":
+        # return 'You have a p in your name, can not have a yelloy hat'
 
         # Checks if the user does exist
         # get(id)
