@@ -8,6 +8,17 @@ Hats_schema = HatSchema(many=True)
 HatSchema = HatSchema()
 
 
+class HatOne(Resource):
+
+    @staticmethod
+    def get():
+        json_data = request.get_json(force=True)
+
+        user = Hat.query.filter_by(id=json_data['id'])
+        user = Hats_schema.dump(user)
+        return user, 200
+
+
 class HatResource(Resource):
 
     @staticmethod

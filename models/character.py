@@ -1,3 +1,5 @@
+from sqlalchemy.orm import relationship
+
 from models.db import db, ma
 from marshmallow import fields
 
@@ -10,6 +12,7 @@ class Character(db.Model):
     weight = db.Column(db.Float)
     human = db.Column(db.Boolean)
     hat = db.Column(db.Integer)
+
 
     def __init__(self, id, name, age, weight, human, hat):
         self.id = id
