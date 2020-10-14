@@ -1,21 +1,20 @@
 from flask import request
 from flask_restful import Resource
 from models.db import db
-from models.character import Character, CharacterSchema
+from models.hat import Hat, HatSchema
 import json
 
-Characters_schema = CharacterSchema(many=True)
-CharacterSchema = CharacterSchema()
+Hats_schema = HatSchema(many=True)
+HatSchema = HatSchema()
 
 
-class CharacterResource(Resource):
+class HatResource(Resource):
 
     @staticmethod
     def get():
-        users = Character.query.all()
-        users = Characters_schema.dump(users)
+        users = Hat.query.all()
+        users = Hats_schema.dump(users)
         return users, 200
-
 
     @staticmethod
     def post():
@@ -24,7 +23,7 @@ class CharacterResource(Resource):
             return {'message': 'No input data provided'}, 400
         # Validate and deserialize input
         response = json.dumps(json_data)
-        data = CharacterSchema.loads(response)
+        data = HatSchema.loads(response)
 
 
         # Avoid printing a DB error to the user
@@ -33,18 +32,14 @@ class CharacterResource(Resource):
         # if user:
             # return {'message': 'User already exists'}, 400
 
-        user = Character(
+        hat = Hat(
             id=data['id'],
-            name=data['name'],
-            age=data['age'],
-            weight=data['weight'],
-            human=data['human'],
-            hat=data['hat']
+            colour=data['colour']
         )
 
-        db.session.add(user)
+        db.session.add(hat)
         db.session.commit()
-        result = CharacterSchema.dump(user)
+        result = HatSchema.dump(hat)
         return result, 201
 
     @staticmethod
@@ -54,11 +49,11 @@ class CharacterResource(Resource):
             return {'message': 'No input data provided'}, 400
         # Validate and deserialize input
         response = json.dumps(json_data)
-        data = CharacterSchema.loads(response)
-        user = Character.query.filter_by(id=data['id']).delete()
+        data = HatSchema.loads(response)
+        hat = Hat.query.filter_by(id=data['id']).delete()
 
         db.session.commit()
-        return {'User deleted': user}, 200
+        return {'User deleted': hat}, 200
 
     @staticmethod
     def put():
@@ -67,12 +62,12 @@ class CharacterResource(Resource):
             return {'message': 'No input data provided'}, 400
         # Validate and deserialize input
         response = json.dumps(json_data)
-        data = CharacterSchema.loads(response)
+        data = HatSchema.loads(response)
 
         # Checks if the user does exist
         # get(id)
-        user = Character.query.filter_by(id=data['id']).update(data)
+        hat = Hat.query.filter_by(id=data['id']).update(data)
 
         db.session.commit()
-        result = CharacterSchema.dump(user)
+        result = HatSchema.dump(hat)
         return result, 201
