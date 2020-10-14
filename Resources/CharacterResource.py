@@ -13,7 +13,7 @@ class CharacterResource(Resource):
     @staticmethod
     def get():
         users = Character.query.all()
-        users = Characters_schema.dumps(users)
+        users = Characters_schema.dump(users)
         return users, 200
 
 
@@ -55,11 +55,10 @@ class CharacterResource(Resource):
         # Validate and deserialize input
         response = json.dumps(json_data)
         data = CharacterSchema.loads(response)
-        user = Character.query.filter_by(id=data['id'])
+        user = Character.query.filter_by(id=data['id']).delete()
 
-        db.session.delete(user)
         db.session.commit()
-        return 'User deleted', 200
+        return {'User deleted': user}, 200
 
     @staticmethod
     def put():
