@@ -1,7 +1,6 @@
 from flask import request
 from flask_restful import Resource
 
-from models.hat import Hat
 from models.db import db
 from models.character import Character, CharacterSchema
 import json
@@ -81,13 +80,14 @@ class CharacterResource(Resource):
         response = json.dumps(json_data)
         data = CharacterSchema.loads(response)
 
-        # Checks if the hat does exist
         user = Character.query.filter_by(id=data['id'])
+        # Checks if the user does exist
         exist = Characters_schema.dump(user)
         if not exist:
             return 'Hat already missing', 400
 
         user.delete()
+
         # db.session.delete(user)
         # Hat.query.filter_by(id=data['hat']).delete()
 
@@ -110,11 +110,11 @@ class CharacterResource(Resource):
         if not exist:
             return 'Character does not exist', 400
 
-        #if data['weight'] > 80 and data['human'] == True:
-            #if data['age'] < 10:
-                #return 'weight is too big for age'
-        #if data['age'] < 0:
-            #return 'age is not correct'
+        # if data['weight'] > 80 and data['human'] == True:
+        # if data['age'] < 10:
+        # return 'weight is too big for age'
+        # if data['age'] < 0:
+        # return 'age is not correct'
 
         # if re.search('[pP]', data['name']) and data['hat'] == "YELLOW":
         # return 'You have a p in your name, can not have a yelloy hat'

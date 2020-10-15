@@ -1,6 +1,3 @@
-from sqlalchemy import ForeignKey
-from sqlalchemy.orm import relationship, backref
-
 from models.db import db, ma
 from marshmallow import fields
 
@@ -12,8 +9,10 @@ class Character(db.Model):
     age = db.Column(db.Integer)
     weight = db.Column(db.Float)
     human = db.Column(db.Boolean)
-    hat = db.Column(db.Integer, ForeignKey("hat.id", ondelete=True))
+    hat = db.Column(db.Integer)
+
     # Creates the one to one relationship
+    hat_R = db.relationship('Hat', uselist=True, back_populates="character")
 
     def __init__(self, id, name, age, weight, human, hat):
         self.id = id

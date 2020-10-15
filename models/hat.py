@@ -17,8 +17,10 @@ class Hat(db.Model):
     __tablename__ = "hat"
     id = db.Column(db.Integer, primary_key=True)
     colour = db.Column(db.Enum(Colour))
+    char_id = db.Column(db.Integer, db.ForeignKey('character.id'))
 
-    #character = relationship("Character", backref=backref('hat', cascade="all, delete", order_by='id'))
+    # Creates the one to one relationship
+    character = db.relationship("Character", backref=db.backref("children", cascade="all,delete", passive_deletes=True))
 
     def __init__(self, id, colour):
         self.id = id

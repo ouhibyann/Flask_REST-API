@@ -68,7 +68,7 @@ class HatResource(Resource):
         if not exist:
             return 'Hat already missing', 400
 
-        hat = Hat.query.filter_by(id=data['id']).delete()
+        Hat.query.filter_by(id=data['id']).delete()
 
         db.session.commit()
         return {'Hat deleted': data['id']}, 200
