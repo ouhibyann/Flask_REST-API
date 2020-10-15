@@ -12,8 +12,8 @@ class Character(db.Model):
     age = db.Column(db.Integer)
     weight = db.Column(db.Float)
     human = db.Column(db.Boolean)
-    hat = db.Column(db.Integer, ForeignKey('hat.id', ondelete="CASCADE"))
-    hat_R = relationship("Hat", cascade="all, delete", backref=backref("character", uselist=False)) # Creates the one to one relationship
+    hat = db.Column(db.Integer, ForeignKey("hat.id", ondelete=True))
+    # Creates the one to one relationship
 
     def __init__(self, id, name, age, weight, human, hat):
         self.id = id

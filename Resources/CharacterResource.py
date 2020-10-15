@@ -13,8 +13,8 @@ CharacterSchema = CharacterSchema()
 
 class CharacterOne(Resource):
 
-    @staticmethod
-    def get():
+    @classmethod
+    def get(cls):
         json_data = request.get_json(force=True)
 
         user = Character.query.filter_by(id=json_data['id'])
@@ -24,14 +24,14 @@ class CharacterOne(Resource):
 
 class CharacterResource(Resource):
 
-    @staticmethod
-    def get():
+    @classmethod
+    def get(cls):
         users = Character.query.all()
         users = Characters_schema.dump(users)
         return users, 200
 
-    @staticmethod
-    def post():
+    @classmethod
+    def post(cls):
         json_data = request.get_json(force=True)
         if not json_data:
             return {'message': 'No input data provided'}, 400
@@ -40,9 +40,12 @@ class CharacterResource(Resource):
         data = CharacterSchema.loads(response)
 
         # Avoid printing a DB error to the user
-        # user = Character.query.filter_by(id=data['id'])
-        # if user:
-        # return {'message': 'User already exists'}, 400
+        # Checks if the hat does exist
+        user = Character.query.filter_by(id=data['id'])
+        exist = Characters_schema.dump(user)
+
+        if exist:
+            return 'User already exists', 400
 
         # the 1-1 relationship with the hat disable the possibility to create a character with hat = False
         if not data['human']:
@@ -68,8 +71,8 @@ class CharacterResource(Resource):
         result = CharacterSchema.dump(user)
         return result, 201
 
-    @staticmethod
-    def delete():
+    @classmethod
+    def delete(cls):
         json_data = request.get_json(force=True)
         if not json_data:
             return {'message': 'No input data provided'}, 400
@@ -77,15 +80,22 @@ class CharacterResource(Resource):
         # Validate and deserialize input
         response = json.dumps(json_data)
         data = CharacterSchema.loads(response)
-        user = Character.query.filter_by(id=data['id']).delete()
+
+        # Checks if the hat does exist
+        user = Character.query.filter_by(id=data['id'])
+        exist = Characters_schema.dump(user)
+        if not exist:
+            return 'Hat already missing', 400
+
+        user.delete()
         # db.session.delete(user)
         # Hat.query.filter_by(id=data['hat']).delete()
 
         db.session.commit()
         return {'User deleted ': data['id']}, 200
 
-    @staticmethod
-    def put():
+    @classmethod
+    def put(cls):
         json_data = request.get_json(force=True)
         if not json_data:
             return {'message': 'No input data provided'}, 400
@@ -93,6 +103,12 @@ class CharacterResource(Resource):
         response = json.dumps(json_data)
         data = CharacterSchema.loads(response)
 
+        # Checks if the user does exist
+        user = Character.query.filter_by(id=data['id'])
+        exist = Characters_schema.dump(user)
+
+        if not exist:
+            return 'Character does not exist', 400
 
         #if data['weight'] > 80 and data['human'] == True:
             #if data['age'] < 10:
@@ -103,8 +119,6 @@ class CharacterResource(Resource):
         # if re.search('[pP]', data['name']) and data['hat'] == "YELLOW":
         # return 'You have a p in your name, can not have a yelloy hat'
 
-        # Checks if the user does exist
-        # get(id)
         user = Character.query.filter_by(id=data['id']).update(data)
 
         db.session.commit()

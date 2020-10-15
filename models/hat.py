@@ -1,5 +1,5 @@
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 
 from models.db import db, ma
 from marshmallow import fields
@@ -17,6 +17,8 @@ class Hat(db.Model):
     __tablename__ = "hat"
     id = db.Column(db.Integer, primary_key=True)
     colour = db.Column(db.Enum(Colour))
+
+    #character = relationship("Character", backref=backref('hat', cascade="all, delete", order_by='id'))
 
     def __init__(self, id, colour):
         self.id = id

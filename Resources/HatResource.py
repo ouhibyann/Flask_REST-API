@@ -36,12 +36,11 @@ class HatResource(Resource):
         response = json.dumps(json_data)
         data = HatSchema.loads(response)
 
-
         # Avoid printing a DB error to the user
-        # user = Character.query.get(id=data['id'])
-
-        # if user:
-            # return {'message': 'User already exists'}, 400
+        user = Hat.query.filter_by(id=data['id'])
+        exist = Hats_schema.dump(user)
+        if exist:
+            return {'message': 'Hat already exists'}, 400
 
         hat = Hat(
             id=data['id'],
@@ -61,11 +60,18 @@ class HatResource(Resource):
         # Validate and deserialize input
         response = json.dumps(json_data)
         data = HatSchema.loads(response)
-        hat = Hat.query.filter_by(id=data['id'])
-        db.session.delete(hat)
+
+        # Checks if the hat does exist
+        user = Hat.query.filter_by(id=data['id'])
+        exist = Hats_schema.dump(user)
+
+        if not exist:
+            return 'Hat already missing', 400
+
+        hat = Hat.query.filter_by(id=data['id']).delete()
 
         db.session.commit()
-        return {'User deleted': hat}, 200
+        return {'Hat deleted': data['id']}, 200
 
     @staticmethod
     def put():
@@ -76,10 +82,15 @@ class HatResource(Resource):
         response = json.dumps(json_data)
         data = HatSchema.loads(response)
 
-        # Checks if the user does exist
-        # get(id)
+        # Checks if the hat does exist
+        user = Hat.query.filter_by(id=data['id'])
+        exist = Hats_schema.dump(user)
+
+        if not exist:
+            return 'Hat does not exist', 400
+
         hat = Hat.query.filter_by(id=data['id'])
-        db.session.update(hat)
+        hat.update(data)
 
         db.session.commit()
         result = HatSchema.dump(hat)
