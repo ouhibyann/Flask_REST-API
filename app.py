@@ -6,8 +6,8 @@ from Resources.CharacterResource import CharacterResource, CharacterOne
 from Resources.HatResource import HatResource, HatOne
 
 
-#app.config['DEBUG'] = True
-#app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:admin@localhost/Metron"
+# app.config['DEBUG'] = True
+# app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:admin@localhost/Metron"
 
 api_bp = Blueprint('api', __name__)
 API = Api(api_bp)

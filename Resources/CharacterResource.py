@@ -33,7 +33,7 @@ class CharacterResource(Resource):
     def post(cls):
         json_data = request.get_json(force=True)
         if not json_data:
-            return {'message': 'No input data provided'}, 400
+            return 'No input data provided', 400
         # Validate and deserialize input
         response = json.dumps(json_data)
         data = CharacterSchema.loads(response)
@@ -44,17 +44,17 @@ class CharacterResource(Resource):
         exist = Characters_schema.dump(user)
 
         if exist:
-            return 'User already exists', 400
+            return 'Character already exists', 400
 
         # the 1-1 relationship with the hat disable the possibility to create a character with hat = False
         if not data['human']:
-            return 'can not create the character'
+            return 'can not create the character', 400
 
         if data['weight'] > 80 and data['human'] == True:
             if data['age'] < 10:
-                return 'weight is too big for age'
+                return 'weight is too big for age', 400
         if data['age'] < 0:
-            return 'age is not correct'
+            return 'age is not correct', 400
 
         user = Character(
             id=data['id'],
@@ -74,7 +74,7 @@ class CharacterResource(Resource):
     def delete(cls):
         json_data = request.get_json(force=True)
         if not json_data:
-            return {'message': 'No input data provided'}, 400
+            return 'No input data provided', 400
 
         # Validate and deserialize input
         response = json.dumps(json_data)
@@ -84,7 +84,7 @@ class CharacterResource(Resource):
         # Checks if the user does exist
         exist = Characters_schema.dump(user)
         if not exist:
-            return 'Hat already missing', 400
+            return 'Character already missing', 400
 
         user.delete()
 
@@ -98,7 +98,7 @@ class CharacterResource(Resource):
     def put(cls):
         json_data = request.get_json(force=True)
         if not json_data:
-            return {'message': 'No input data provided'}, 400
+            return 'No input data provided', 400
         # Validate and deserialize input
         response = json.dumps(json_data)
         data = CharacterSchema.loads(response)
@@ -117,7 +117,7 @@ class CharacterResource(Resource):
         # return 'age is not correct'
 
         # if re.search('[pP]', data['name']) and data['hat'] == "YELLOW":
-        # return 'You have a p in your name, can not have a yelloy hat'
+        # return 'You have a p in your name, can not have a yellow hat'
 
         user = Character.query.filter_by(id=data['id']).update(data)
 
