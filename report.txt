@@ -1,0 +1,5 @@
+DataResource.py:15:25: E999 SyntaxError: invalid syntax
+DataResource.py:16:1: W391 blank line at end of file
+
+../models/Data.py:23:27: W292 no newline at end of file
+DataResource.py:30:80: E501 line too long (82 > 79 characters)
