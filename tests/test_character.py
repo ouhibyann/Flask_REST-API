@@ -1,8 +1,6 @@
 from app import create_app
-from models.db import db
-from models.character import Character
 import unittest
-import json
+
 
 
 class test_character(unittest.TestCase):
@@ -17,7 +15,7 @@ class test_character(unittest.TestCase):
         # This formatting is due to JSON on windows ...
         self.client.post('/character', data="{\"id\": 7,\"name\": \"moi\",\"age\": 23,\"weight\": 75,\"human\": "
                                             "\"True\",\"hat\": 3}")
-        res = self.client.get('/character', data={"id": 7})
+        res = self.client.get('/character')
         self.assertEqual(res.status_code, 200)
 
     ''' --------------------------------
@@ -34,7 +32,7 @@ class test_character(unittest.TestCase):
     Testing the CREATE / POST of the API's character
     --------------------------------------'''
 
-    def test_create_response(self):
+    def test_create_character(self):
         self.client.delete('/character', data="{\"id\": 7}")  # delete the character if exists
         res = self.client.post('/character', data="{\"id\": 7,\"name\": \"moi\",\"age\": 23,\"weight\": 75,\"human\": "
                                                   "\"True\",\"hat\": 3}")
@@ -44,7 +42,7 @@ class test_character(unittest.TestCase):
         # we only check that the correct id is return in the whole data
         self.assertIn("id\": 7", str(res.data))
 
-    def test_alreadyExist_create_response(self):
+    def test_alreadyExist_create_character(self):
         res = self.client.post('/character', data="{\"id\": 7,\"name\": \"moi\",\"age\": 23,\"weight\": 75,\"human\": "
                                                   "\"True\",\"hat\": 3}")
         # we send it a second time so the app should respond 'user already exists, 400"
@@ -69,21 +67,20 @@ class test_character(unittest.TestCase):
         self.assertEqual(res.status_code, 400)
         self.assertIn("can not create the character", str(res.data))
 
-    def test_Not_AgeandWeight_create_character(self):
+    def test_Not_AgeAndWeight_create_character(self):
         self.client.delete('/character', data="{\"id\":7}")
         res = self.client.post('/character', data="{\"id\": 7,\"name\": \"moi\",\"age\": 8,\"weight\": 90,\"human\": "
                                                   "\"True\",\"hat\": 3}")
         self.assertEqual(res.status_code, 400)
         self.assertIn("weight is too big for age", str(res.data))
 
-        
+
     ''' --------------------------------
     Testing the DELETE of the API's character
     --------------------------------------'''
 
     def test_delete_character(self):
-        # With the order of the tests, this character should exist
-        # If it doesn't one should make a put request via the API
+
         self.client.post('/character', data="{\"id\": 7,\"name\": \"moi\",\"age\": 23,\"weight\": 75,\"human\": "
                                             "\"True\",\"hat\": 3}")
         res = self.client.delete('/character', data="{\"id\":7}")

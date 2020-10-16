@@ -31,7 +31,7 @@ class HatResource(Resource):
     def post():
         json_data = request.get_json(force=True)
         if not json_data:
-            return {'message': 'No input data provided'}, 400
+            return 'No input data provided', 400
         # Validate and deserialize input
         response = json.dumps(json_data)
         data = HatSchema.loads(response)
@@ -40,7 +40,7 @@ class HatResource(Resource):
         user = Hat.query.filter_by(id=data['id'])
         exist = Hats_schema.dump(user)
         if exist:
-            return {'message': 'Hat already exists'}, 400
+            return 'Hat already exists', 400
 
         hat = Hat(
             id=data['id'],
@@ -56,7 +56,7 @@ class HatResource(Resource):
     def delete():
         json_data = request.get_json(force=True)
         if not json_data:
-            return {'message': 'No input data provided'}, 400
+            return 'No input data provided', 400
         # Validate and deserialize input
         response = json.dumps(json_data)
         data = HatSchema.loads(response)
@@ -77,7 +77,7 @@ class HatResource(Resource):
     def put():
         json_data = request.get_json(force=True)
         if not json_data:
-            return {'message': 'No input data provided'}, 400
+            return 'No input data provided', 400
         # Validate and deserialize input
         response = json.dumps(json_data)
         data = HatSchema.loads(response)
