@@ -60,20 +60,27 @@ class test_character(unittest.TestCase):
                                                   "\"True\",\"hat\": 3}")
         self.assertIn("age is not correct", str(res.data))
 
-    def test_Not_Human_create_character(self):
+    def test_Human_Not_create_character(self):
         self.client.delete('/character', data="{\"id\":7}")
         res = self.client.post('/character', data="{\"id\": 7,\"name\": \"moi\",\"age\": 23,\"weight\": 75,\"human\": "
                                                   "\"False\",\"hat\": 3}")
         self.assertEqual(res.status_code, 400)
         self.assertIn("can not create the character", str(res.data))
 
-    def test_Not_AgeAndWeight_create_character(self):
+    def testAgeAndWeight_Not_create_character(self):
         self.client.delete('/character', data="{\"id\":7}")
         res = self.client.post('/character', data="{\"id\": 7,\"name\": \"moi\",\"age\": 8,\"weight\": 90,\"human\": "
                                                   "\"True\",\"hat\": 3}")
         self.assertEqual(res.status_code, 400)
         self.assertIn("weight is too big for age", str(res.data))
 
+    def test_YellowAndP_Not_create_character(self):
+        self.client.delete('/character', data="{\"id\":7}")
+        self.client.post('/hat', data="{\"id\": 7,\"colour\": \"YELLOW\"}")
+        res = self.client.post('/character', data="{\"id\": 7,\"name\": \"p\",\"age\": 18,\"weight\": 50,\"human\": "
+                                                  "\"True\",\"hat\": 7}")
+        self.assertEqual(res.status_code, 400)
+        self.assertIn("You have a p in your name, can not have a yellow hat", str(res.data))
 
     ''' --------------------------------
     Testing the DELETE of the API's character

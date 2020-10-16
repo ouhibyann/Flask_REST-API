@@ -3,11 +3,14 @@ from flask_restful import Resource
 
 from models.db import db
 from models.character import Character, CharacterSchema
+from models.hat import Hat, HatSchema
 import json
 import re
 
 Characters_schema = CharacterSchema(many=True)
 CharacterSchema = CharacterSchema()
+
+HatSchema = HatSchema(many=True)
 
 
 class CharacterOne(Resource):
@@ -50,11 +53,21 @@ class CharacterResource(Resource):
         if not data['human']:
             return 'can not create the character', 400
 
+        # Weight and age constraint
         if data['weight'] > 80 and data['human'] == True:
             if data['age'] < 10:
                 return 'weight is too big for age', 400
+
+        # Age constraint
         if data['age'] < 0:
             return 'age is not correct', 400
+
+        # p and yellow constraint
+        hat = Hat.query.filter_by(id=data['hat'])
+        hat = HatSchema.dump(hat)
+
+        if (re.search('p', data['name']) or re.search('P', data['name'])) and hat[0]['colour'] == "YELLOW":
+            return 'You have a p in your name, can not have a yellow hat', 400
 
         user = Character(
             id=data['id'],
@@ -115,9 +128,6 @@ class CharacterResource(Resource):
         # return 'weight is too big for age'
         # if data['age'] < 0:
         # return 'age is not correct'
-
-        # if re.search('[pP]', data['name']) and data['hat'] == "YELLOW":
-        # return 'You have a p in your name, can not have a yellow hat'
 
         user = Character.query.filter_by(id=data['id']).update(data)
 
