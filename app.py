@@ -1,3 +1,4 @@
+from Resources.DataResource import DataResource
 from instance.config import app_config
 from models.db import db
 from flask import Flask, Blueprint
@@ -13,9 +14,12 @@ api_bp = Blueprint('api', __name__)
 API = Api(api_bp)
 
 API.add_resource(CharacterResource, '/character')
-API.add_resource(HatResource, '/hat')
 API.add_resource(CharacterOne, '/oneCharacter')
+
+API.add_resource(HatResource, '/hat')
 API.add_resource(HatOne, '/oneHat')
+
+API.add_resource(DataResource, '/data')
 
 
 def create_app(config_name):

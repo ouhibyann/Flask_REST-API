@@ -7,3 +7,4 @@ flask_sqlalchemy
 flask_marshmallow
 psycopg2
 SQLAlchemy~=1.3.20
+flake8~=3.8.4
