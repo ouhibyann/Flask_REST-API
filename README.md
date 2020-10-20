@@ -8,11 +8,11 @@ Some controls about the characters are set in order to be coherent.
 
 # Curl API with Postman
 
-Package sare provided in .JSON format with the project to test the all the services.
+Package are provided in .JSON format with the project to test all the services.
 
 
 # Running Tests
-For all the endpoints - respectivly for each services, you will find test to run.
+For all the endpoints - respectivly for each services, you will find tests to run.
 If you wish to change your test database from your dev database, production database you may do so by changing URL in instance/config.py
 
 
